@@ -24,18 +24,18 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Sonara — Spatial Music',
+  title: 'ZRA — Spatial Music',
   description:
     'iOS 27 Liquid Glass YouTube Music web client powered by ytmusic-api and Sonara recommendation & queue engine.',
   openGraph: {
-    title: 'Sonara — Spatial Music',
+    title: 'ZRA — Spatial Music',
     description:
       'iOS 27 Liquid Glass YouTube Music web client powered by ytmusic-api and Sonara recommendation & queue engine.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sonara — Spatial Music',
+    title: 'ZRA — Spatial Music',
     description:
       'iOS 27 Liquid Glass YouTube Music web client powered by ytmusic-api and Sonara recommendation & queue engine.',
   },
