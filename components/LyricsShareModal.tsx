@@ -255,10 +255,10 @@ export function LyricsShareModal({ open, onClose }: LyricsShareModalProps) {
         cursorY += lineHeight;
       }
 
-      // Clean Sonara signature footer
+      // Clean ZRA signature footer
       ctx.fillStyle = activeTheme.mutedColor;
       ctx.font = '600 28px system-ui, -apple-system, sans-serif';
-      ctx.fillText('Sonara', pad, canvas.height - pad);
+      ctx.fillText('ZRA', pad, canvas.height - pad);
 
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
