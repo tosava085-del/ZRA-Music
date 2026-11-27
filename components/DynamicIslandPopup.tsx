@@ -360,7 +360,7 @@ function DynamicIslandProSurface({
                 setNowPlayingTab('player');
                 setIsNowPlayingOpen(true);
               }}
-              aria-label="Return to Sonara app"
+              aria-label="Return to ZRA app"
               className="min-h-[38px] min-w-[38px] rounded-full text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors"
             >
               <Maximize2 className="w-4 h-4" />
@@ -582,7 +582,7 @@ export function DynamicIslandPopup() {
           win.document.documentElement.style.cssText = document.documentElement.style.cssText;
           win.document.body.className = document.body.className;
 
-          win.document.title = 'Sonara · Dynamic Island Pro';
+          win.document.title = 'ZRA · Dynamic Island Pro';
           win.document.body.style.margin = '0';
           win.document.body.style.background = '#090A0F';
           win.document.body.style.overflow = 'hidden';
