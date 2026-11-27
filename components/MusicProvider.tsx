@@ -105,13 +105,10 @@ interface YTPlayerInstance {
 export type NowPlayingTab = 'player' | 'lyrics' | 'queue';
 
 interface MusicContextValue {
-  // Navigation
   activeTab: NavTab;
   setActiveTab: (tab: NavTab) => void;
   detailTarget: DetailTarget | null;
   openDetail: (target: DetailTarget | null) => void;
-
-  // Player state
   queueState: QueueState;
   currentTrack: Track | null;
   isPlaying: boolean;
@@ -130,8 +127,6 @@ interface MusicContextValue {
   setSleepTimer: (minutes: number | null) => void;
   sleepTimerEndOfTrack: boolean;
   setSleepTimerEndOfTrack: (enabled: boolean) => void;
-
-  // Background Popup (iPhone 17-18 Pro Dynamic Island PiP / Overlay)
   popupMode: BackgroundPopupMode;
   setPopupMode: (mode: BackgroundPopupMode) => void;
   openBackgroundPopup: () => void;
@@ -142,8 +137,6 @@ interface MusicContextValue {
     open: () => void;
     close: () => void;
   }) => void;
-
-  // Playback actions
   playTrack: (track: Track, contextQueue?: Track[]) => void;
   play: () => void;
   pause: () => void;
@@ -161,12 +154,8 @@ interface MusicContextValue {
   cycleRepeat: () => void;
   startRadio: (track: Track) => Promise<void>;
   jumpToQueueIndex: (idx: number) => void;
-
-  // Lyrics
   lyrics: LyricsPayload | null;
   lyricsLoading: boolean;
-
-  // Library & Metrolist history
   history: PlayEvent[];
   likedTracks: Track[];
   isLiked: (videoId: string) => boolean;
@@ -187,8 +176,6 @@ interface MusicContextValue {
   addSearchHistory: (query: string) => void;
   clearSearchHistory: () => void;
   clearPlayHistory: () => void;
-
-  // Settings, Backup & Toast
   settings: PlayerSettings;
   updateSettings: (patch: Partial<PlayerSettings>) => void;
   resetSettings: () => void;
@@ -196,8 +183,6 @@ interface MusicContextValue {
   importLibraryBackup: (rawJson: string) => { ok: boolean; message: string };
   toastMessage: string | null;
   showToast: (msg: string) => void;
-
-  // YT Player host ref
   ytContainerRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -215,7 +200,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [activeTab, setActiveTabState] = useState<NavTab>('home');
   const [detailTarget, setDetailTarget] = useState<DetailTarget | null>(null);
-
   const [queueState, setQueueState] = useState<QueueState>(createQueueState);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
@@ -223,16 +207,13 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(85);
   const [isMuted, setIsMuted] = useState(false);
-
   const [isNowPlayingOpen, setIsNowPlayingOpen] = useState(false);
   const [nowPlayingTab, setNowPlayingTab] = useState<NowPlayingTab>('player');
   const [showVideoStage, setShowVideoStage] = useState(false);
-
   const [sleepTimerMinutes, setSleepTimerMinutes] = useState<number | null>(null);
   const [sleepTimerEndOfTrack, setSleepTimerEndOfTrackState] = useState(false);
   const sleepDeadlineRef = useRef<number | null>(null);
   const sleepEndOfTrackRef = useRef(false);
-
   const [history, setHistory] = useState<PlayEvent[]>([]);
   const [likedTracks, setLikedTracks] = useState<Track[]>([]);
   const [playlists, setPlaylists] = useState<UserPlaylist[]>([]);
@@ -240,7 +221,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [settings, setSettings] = useState<PlayerSettings>(DEFAULT_SETTINGS);
   const [playlistPickerTrack, setPlaylistPickerTrack] = useState<Track | null>(null);
-
   const [lyrics, setLyrics] = useState<LyricsPayload | null>(null);
   const [lyricsLoading, setLyricsLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -250,15 +230,12 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     open: () => {},
     close: () => {},
   });
-
   const ytContainerRef = useRef<HTMLDivElement | null>(null);
   const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
   const ytReadyRef = useRef(false);
   const lastLoadedVideoIdRef = useRef<string | null>(null);
   const nextTrackRef = useRef<(manual?: boolean) => void>(() => {});
   const radioFetchingRef = useRef<string | null>(null);
-
-  // Background playback refs
   const userPausedRef = useRef(false);
   const intendedPlayingRef = useRef(false);
   const bgRecoveryCountRef = useRef(0);
@@ -271,7 +248,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const recoveryTimersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const lastTickMsRef = useRef<number>(0);
-
   const currentTrack = useMemo(() => getCurrentTrack(queueState), [queueState]);
 
   useEffect(() => {
@@ -297,7 +273,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     recoveryTimersRef.current = [];
   }, []);
 
-  // Lightweight non-focus-stealing Web Audio keep-alive (keeps renderer audio thread alive without stealing Android HTMLMediaElement focus from YouTube IFrame)
   const ensureSilentAudioThread = useCallback(() => {
     if (typeof window === 'undefined' || !settingsRef.current.backgroundPlay) return;
     try {
@@ -307,7 +282,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         const ctx = new Ctx();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        gain.gain.value = 0.00001; // inaudible, keeps audio thread active
+        gain.gain.value = 0.00001;
         osc.frequency.value = 20;
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -317,16 +292,13 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         void audioCtxRef.current.resume().catch(() => {});
       }
     } catch {
-      // ignore autoplay-restricted contexts before gesture
     }
   }, []);
 
-  // Staggered watchdog that keeps YouTube IFrame audio unmuted & playing across PiP and tab transitions
   const resumePlaybackKeepAlive = useCallback(() => {
     if (!intendedPlayingRef.current || userPausedRef.current) return;
     clearRecoveryTimers();
     ensureSilentAudioThread();
-
     const pulse = () => {
       if (!intendedPlayingRef.current || userPausedRef.current) return;
       if (!ytReadyRef.current || !ytPlayerRef.current) return;
@@ -336,15 +308,12 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
           ytPlayerRef.current.unMute();
           ytPlayerRef.current.setVolume(volumeRef.current);
         }
-        // Only force playVideo if not already actively playing (1) or buffering (3)
         if (state !== 1 && state !== 3) {
           ytPlayerRef.current.playVideo();
         }
       } catch {
-        // ignore player errors
       }
     };
-
     for (const delay of BACKGROUND_RECOVERY_DELAYS_MS) {
       if (delay === 0) {
         pulse();
@@ -386,7 +355,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     }, 2600);
   }, []);
 
-  // Hydrate persisted library & settings on mount
   useEffect(() => {
     let active = true;
     queueMicrotask(() => {
@@ -405,7 +373,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Sync Metrolist dark/light, Pure Black AMOLED class & Material 3 dynamic CSS variables on <html>
   useEffect(() => {
     if (!hydrated) return;
     const root = document.documentElement;
@@ -419,7 +386,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     } else {
       root.classList.remove('pure-black');
     }
-
     const { tokens } = resolveMetrolistTheme(
       {
         theme: settings.theme,
@@ -448,10 +414,8 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     hydrated,
   ]);
 
-  // Initialize YouTube IFrame Player API lazily
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
     const initPlayer = () => {
       if (!ytContainerRef.current || ytPlayerRef.current || !window.YT?.Player) return;
       try {
@@ -481,7 +445,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
                   );
                 }
               } catch {
-                // ignore
               }
               ev.target.setVolume(volumeRef.current);
               if (!isMutedRef.current) ev.target.unMute();
@@ -503,7 +466,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
                     ev.target.unMute();
                     ev.target.setVolume(volumeRef.current);
                   } catch {
-                    // ignore
                   }
                 }
                 const d = ev.target.getDuration();
@@ -533,7 +495,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
                     }
                     ev.target.playVideo();
                   } catch {
-                    // ignore
                   }
                   resumePlaybackKeepAlive();
                   return;
@@ -570,15 +531,12 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
           },
         });
       } catch {
-        // Headless/offline environments may block iframe script
       }
     };
-
     if (window.YT?.Player) {
       initPlayer();
       return;
     }
-
     const existingScript = document.querySelector(
       'script[src="https://www.youtube.com/iframe_api"]'
     );
@@ -591,13 +549,10 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     }
   }, [resumePlaybackKeepAlive, showToast]);
 
-  // Load new track into YT Player + fetch synced lyrics + auto-radio prefetch
   useEffect(() => {
     if (!currentTrack) return;
-
     let cancelled = false;
     lastLoadedVideoIdRef.current = currentTrack.videoId;
-
     if (ytReadyRef.current && ytPlayerRef.current) {
       try {
         const shouldCuePaused =
@@ -615,22 +570,16 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         }
         ytPlayerRef.current.setPlaybackRate(settings.playbackRate);
       } catch {
-        // ignore if player not attached
       }
     }
-
     const syncTrackData = async () => {
       setCurrentTime(0);
       setDuration(currentTrack.duration ?? 210);
-
-      // Record play in Metrolist history
       setHistory((prev) => {
         const updated = recordTrackPlay(prev, currentTrack);
         saveHistory(updated);
         return updated;
       });
-
-      // Fetch Lyrics
       setLyricsLoading(true);
       const params = new URLSearchParams({
         videoId: currentTrack.videoId,
@@ -638,7 +587,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         artist: currentTrack.artist,
         duration: String(currentTrack.duration ?? 0),
       });
-
       try {
         const res = await fetch(`/api/music/lyrics?${params.toString()}`);
         const data = (await res.json()) as LyricsPayload;
@@ -650,8 +598,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       } finally {
         if (!cancelled) setLyricsLoading(false);
       }
-
-      // Metrolist Auto-Continue Radio: prefetch Up Nexts when near end of queue
       const remaining = queueState.queue.length - 1 - queueState.currentIndex;
       if (
         settings.autoContinueRadio &&
@@ -670,31 +616,24 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
             );
           }
         } catch {
-          // ignore network errors for background radio fetch
         }
       }
     };
-
     void syncTrackData();
-
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.videoId]);
 
-  // Non-focus-stealing Web Audio Thread Keep-Alive + Browser Tab Title Sync
   useEffect(() => {
     if (typeof window === 'undefined') return;
-
     if (currentTrack && isPlaying) {
-      document.title = `▶ ${currentTrack.title} · ${currentTrack.artist} — Sonara`;
+      document.title = `▶ ${currentTrack.title} · ${currentTrack.artist} — ZRA`;
     } else if (currentTrack) {
-      document.title = `${currentTrack.title} — Sonara`;
+      document.title = `${currentTrack.title} — ZRA`;
     } else {
-      document.title = 'Sonara — Spatial Music';
+      document.title = 'ZRA — Spatial Music';
     }
-
     if (isPlaying && settings.backgroundPlay && currentTrack) {
       ensureSilentAudioThread();
     } else if (audioCtxRef.current && audioCtxRef.current.state === 'running') {
@@ -702,7 +641,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isPlaying, settings.backgroundPlay, currentTrack, ensureSilentAudioThread]);
 
-  // Cleanup keep-alive AudioContext & recovery timers on unmount
   useEffect(() => {
     return () => {
       clearRecoveryTimers();
@@ -713,10 +651,8 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     };
   }, [clearRecoveryTimers]);
 
-  // Page Visibility & Window Blur Guard: keep playback alive across tab/app transitions + optional auto pop-out
   useEffect(() => {
     if (typeof document === 'undefined') return;
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         if (
@@ -742,12 +678,10 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
               setCurrentTime(ytTime);
             }
           } catch {
-            // ignore
           }
         }
       }
     };
-
     const handleWindowBlur = () => {
       if (
         settingsRef.current.backgroundPlay &&
@@ -757,7 +691,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         resumePlaybackKeepAlive();
       }
     };
-
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleWindowBlur);
     window.addEventListener('pageshow', handleWindowBlur);
@@ -768,17 +701,13 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     };
   }, [resumePlaybackKeepAlive]);
 
-  // Playback progress ticker (Wall-clock drift-corrected + involuntary-pause watchdog) + Sleep timer monitor
   useEffect(() => {
     if (!isPlaying || !currentTrack) return;
     lastTickMsRef.current = Date.now();
-
     const timer = setInterval(() => {
       const now = Date.now();
       const lastTick = lastTickMsRef.current;
       lastTickMsRef.current = now;
-
-      // Check sleep timer
       if (sleepDeadlineRef.current && now >= sleepDeadlineRef.current) {
         sleepDeadlineRef.current = null;
         setSleepTimerMinutes(null);
@@ -790,11 +719,9 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         showToast('Sleep timer paused playback');
         return;
       }
-
       if (ytReadyRef.current && ytPlayerRef.current) {
         try {
           const ytState = ytPlayerRef.current.getPlayerState?.();
-          // Watchdog: if YouTube paused involuntarily while popup/background is active, pulse resume
           if (
             intendedPlayingRef.current &&
             !userPausedRef.current &&
@@ -808,7 +735,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
             }
             ytPlayerRef.current.playVideo();
           }
-
           const ytTime = ytPlayerRef.current.getCurrentTime();
           const ytDur = ytPlayerRef.current.getDuration();
           if (ytDur && ytDur > 0) setDuration(ytDur);
@@ -817,10 +743,8 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
             return;
           }
         } catch {
-          // fallback timer increment
         }
       }
-
       setCurrentTime((prev) => {
         const maxDur = duration || currentTrack.duration || 210;
         const { nextTime, reachedEnd } = computeElapsedWithDrift(
@@ -837,7 +761,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         return nextTime;
       });
     }, 250);
-
     return () => clearInterval(timer);
   }, [isPlaying, currentTrack, duration, settings.playbackRate, showToast, clearRecoveryTimers]);
 
@@ -861,7 +784,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         ytPlayerRef.current.loadVideoById(track.videoId);
         ytPlayerRef.current.playVideo();
       } catch {
-        // ignore
       }
     }
   }, []);
@@ -881,7 +803,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         }
         ytPlayerRef.current.playVideo();
       } catch {
-        // ignore
       }
     }
   }, [currentTrack, ensureSilentAudioThread]);
@@ -896,7 +817,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       try {
         ytPlayerRef.current.pauseVideo();
       } catch {
-        // ignore
       }
     }
   }, [currentTrack, clearRecoveryTimers]);
@@ -959,28 +879,24 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       try {
         ytPlayerRef.current.seekTo(clamped, true);
       } catch {
-        // ignore
       }
     }
   }, []);
 
-  // Full Media Session API for native iOS / Android / macOS / Windows background & lockscreen controls
   useEffect(() => {
     if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return;
     if (!currentTrack) {
       try {
         navigator.mediaSession.playbackState = 'none';
       } catch {
-        // ignore
       }
       return;
     }
-
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: currentTrack.title,
         artist: currentTrack.artist,
-        album: currentTrack.album?.name || 'Sonara Music',
+        album: currentTrack.album?.name || 'ZRA Music',
         artwork: currentTrack.thumbnail
           ? [
               { src: currentTrack.thumbnail, sizes: '256x256', type: 'image/jpeg' },
@@ -1011,11 +927,9 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         }
       });
     } catch {
-      // ignore unsupported MediaSession environments
     }
   }, [currentTrack, isPlaying, play, pause, resumePlaybackKeepAlive, nextTrack, prevTrack, seekTo, currentTime, duration]);
 
-  // Sync Media Session position state smoothly
   useEffect(() => {
     if (
       typeof navigator === 'undefined' ||
@@ -1030,7 +944,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     try {
       navigator.mediaSession.setPositionState(pos);
     } catch {
-      // ignore
     }
   }, [currentTrack, currentTime, duration, settings.playbackRate]);
 
@@ -1043,7 +956,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         ytPlayerRef.current.setVolume(clamped);
         if (clamped > 0) ytPlayerRef.current.unMute();
       } catch {
-        // ignore
       }
     }
   }, []);
@@ -1056,7 +968,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
           if (next) ytPlayerRef.current.mute();
           else ytPlayerRef.current.unMute();
         } catch {
-          // ignore
         }
       }
       return next;
@@ -1122,7 +1033,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
           );
         }
       } catch {
-        // ignore
       }
     },
     [playTrack, settings, showToast]
@@ -1348,7 +1258,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         try {
           ytPlayerRef.current.setPlaybackRate(patch.playbackRate);
         } catch {
-          // ignore
         }
       }
       return next;
@@ -1362,15 +1271,14 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
       try {
         ytPlayerRef.current.setPlaybackRate(DEFAULT_SETTINGS.playbackRate);
       } catch {
-        // ignore
       }
     }
-    showToast('Preferences reset to Sonara defaults');
+    showToast('Preferences reset to ZRA defaults');
   }, [showToast]);
 
   const exportLibraryBackup = useCallback(() => {
     const payload = {
-      app: 'Sonara',
+      app: 'ZRA',
       version: 1,
       exportedAt: new Date().toISOString(),
       history,
@@ -1391,7 +1299,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
           return { ok: false, message: 'Invalid backup JSON file' };
         }
         let importedCount = 0;
-
         if (Array.isArray(parsed.history)) {
           const validHistory = parsed.history as PlayEvent[];
           setHistory(validHistory);
@@ -1430,7 +1337,6 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
           setSettings(merged);
           saveSettings(merged);
         }
-
         const msg =
           importedCount > 0
             ? `Backup restored (${importedCount} items)`
@@ -1524,4 +1430,4 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   };
 
   return <MusicContext.Provider value={value}>{children}</MusicContext.Provider>;
-}
+  }
