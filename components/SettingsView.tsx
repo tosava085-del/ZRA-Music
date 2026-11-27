@@ -342,7 +342,7 @@ export function SettingsView() {
     const a = document.createElement('a');
     const dateStamp = new Date().toISOString().slice(0, 10);
     a.href = url;
-    a.download = `sonara-backup-${dateStamp}.json`;
+    a.download = `zra-backup-${dateStamp}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -370,8 +370,8 @@ export function SettingsView() {
     settings.theme === 'dark'
       ? settings.pureBlack
         ? 'Pure Black AMOLED'
-        : 'Sonara Dark'
-      : 'Sonara Light';
+        : 'ZRA Dark'
+      : 'ZRA Light';
 
   return (
     <div className="space-y-6 pb-10 max-w-4xl mx-auto">
