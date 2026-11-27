@@ -42,7 +42,7 @@ interface AccentPalette {
  */
 export const METROLIST_ACCENT_PALETTES: Record<AccentPreset, AccentPalette> = {
   metrolist: {
-    label: 'Sonara Blue',
+    label: 'ZRA Blue',
     swatch: '#4285F4',
     dark: {
       primary: '#A8C7FA',
