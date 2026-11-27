@@ -61,7 +61,7 @@ export function MobileTopBar() {
         }}
         className="text-base font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap shrink-0"
       >
-        Sonara
+        ZRA
       </button>
 
       {/* Center slot intentionally stays open for the top-center Dynamic Island */}
