@@ -520,7 +520,7 @@ export function StatsView() {
             exit={{ opacity: 0 }}
             role="dialog"
             aria-modal="true"
-            aria-label="Sonara Listening Recap Story"
+            aria-label="ZRA Listening Recap Story"
             data-testid="recap-story-modal"
             className="fixed inset-0 z-[80] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4"
           >
