@@ -26,7 +26,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'ZRA — Spatial Music',
   description:
-    'iOS 27 Liquid Glass YouTube Music web client powered by ytmusic-api and Sonara recommendation & queue engine.',
+    'iOS 27 Liquid Glass YouTube Music web client powered by ytmusic-api and ZRA recommendation & queue engine.',
   manifest: '/manifest.json',
   themeColor: '#000000',
   appleWebApp: {
