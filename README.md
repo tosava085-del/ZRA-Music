@@ -41,7 +41,7 @@
 
 Secara fungsional, ZRA memadukan mesin rekomendasi, antrean, dan animasi lirik per-kata bergaya **Metrolist** dengan fitur analitik, audio tools, dan antarmuka ekspresif bergaya **ArchiveTune** — termasuk **Equalizer 5-Band**, **Sleep Timer (End of Current Track)**, **Ambient Always-On Display (AOD)**, **Shareable Lyrics Card Studio**, **Listening Stats & Year-in-Music Recap**, **Auto Top Mixes**, **Custom Playlist Tags**, serta **Dual-Scope Search (Online + My Library)**.
 
-> **Performa Awal Ringan:** Saat web pertama kali dibuka, Sonara menggunakan gaya dock ringan (`dockStyle: 'default'`) agar rendering cepat dan hemat sumber daya. Mode **Liquid Glass** berbasis SVG refraksi dapat diaktifkan kapan saja melalui menu **Settings → Appearance**.
+> **Performa Awal Ringan:** Saat web pertama kali dibuka, ZRA menggunakan gaya dock ringan (`dockStyle: 'default'`) agar rendering cepat dan hemat sumber daya. Mode **Liquid Glass** berbasis SVG refraksi dapat diaktifkan kapan saja melalui menu **Settings → Appearance**.
 
 ---
 
@@ -51,10 +51,10 @@ Secara fungsional, ZRA memadukan mesin rekomendasi, antrean, dan animasi lirik p
 
 | Now Playing (V9 Expressive + Dynamic Color) | Audio Equalizer 5-Band + Sub-Bass |
 | :---: | :---: |
-| <img src="./docs/screenshots/now-playing-desktop.png" alt="Sonara Now Playing Desktop" width="100%" /> | <img src="./docs/screenshots/equalizer-desktop.png" alt="Sonara Audio Equalizer Desktop" width="100%" /> |
+| <img src="./docs/screenshots/now-playing-desktop.png" alt="ZRA Now Playing Desktop" width="100%" /> | <img src="./docs/screenshots/equalizer-desktop.png" alt="Sonara Audio Equalizer Desktop" width="100%" /> |
 
 <div align="center">
-  <img src="./docs/screenshots/aod-desktop.png" alt="Sonara Ambient Always-On Display Desktop" width="92%" />
+  <img src="./docs/screenshots/aod-desktop.png" alt="ZRA Ambient Always-On Display Desktop" width="92%" />
   <br />
   <sub><b>Ambient Always-On Display (AOD)</b> — Mode latar Adaptive Blurred Art, jam digital bold, sampul Squircle, ticker lirik sinkron real-time, & kontrol OLED hemat layar.</sub>
 </div>
@@ -336,7 +336,7 @@ npm run start
 Proyek ini dilisensikan di bawah **Apache License 2.0**. Lihat berkas [`LICENSE`](./LICENSE) untuk rincian lengkap mengenai hak penggunaan, modifikasi, dan distribusi.
 
 ```text
-Copyright 2026 Sonara — SANN404 FORUM GROUP
+Copyright 2026 ZRA  — BIG THX TO SANN404 FORUM GROUP
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
