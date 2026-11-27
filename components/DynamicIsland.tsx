@@ -339,7 +339,7 @@ export function DynamicIsland() {
                 className="w-2.5 h-2.5 rounded-full bg-white/15 ring-1 ring-white/20"
               />
               <span className="text-[11px] font-medium tracking-tight text-white/75 whitespace-nowrap">
-                Sonara
+                ZRA
               </span>
             </motion.div>
           )}
