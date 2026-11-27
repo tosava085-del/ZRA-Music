@@ -53,7 +53,7 @@ export function TopPicksCollageSection({
     const seenArtists = new Set<string>();
     const leads: Track[] = [];
     for (const track of unique) {
-      const primaryArtist = (track.artists?.[0]?.name || track.artist || 'Sonara')
+      const primaryArtist = (track.artists?.[0]?.name || track.artist || 'ZRA')
         .split(/[,&]|feat\.|ft\./i)[0]
         .trim();
       const key = primaryArtist.toLowerCase();
@@ -66,7 +66,7 @@ export function TopPicksCollageSection({
     if (leads.length === 0) return [];
 
     return leads.map((lead, idx) => {
-      const primaryArtist = (lead.artists?.[0]?.name || lead.artist || 'Sonara')
+      const primaryArtist = (lead.artists?.[0]?.name || lead.artist || 'ZRA')
         .split(/[,&]|feat\.|ft\./i)[0]
         .trim();
       const others = unique.filter((t) => t.videoId !== lead.videoId);
