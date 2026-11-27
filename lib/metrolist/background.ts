@@ -238,7 +238,7 @@ export function renderDynamicIslandToCanvas(
     ctx.fillStyle = 'rgba(255, 255, 255, 0.42)';
     ctx.font = '500 14px system-ui, -apple-system, sans-serif';
     ctx.fillText(
-      state.isPlaying ? 'Playing in Background · Sonara' : 'Paused · Sonara',
+      state.isPlaying ? 'Playing in Background · ZRA' : 'Paused · ZRA',
       textX,
       122
     );
