@@ -558,7 +558,7 @@ export function StatsView() {
 
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-white/75">
-                    Sonara Recap · {recapSlide + 1}/{recapSlides.length}
+                    ZRA Recap · {recapSlide + 1}/{recapSlides.length}
                   </span>
                   <button
                     type="button"
