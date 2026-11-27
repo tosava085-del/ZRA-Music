@@ -35,11 +35,11 @@
 
 ---
 
-## Tentang Sonara
+## Tentang ZRA
 
-**Sonara** adalah aplikasi web klien **YouTube Music** modern berbasis **Next.js App Router** yang menggabungkan pengalaman desain **Material 3 Expressive** & **Pure Black AMOLED**, **Dynamic Color** adaptif dari sampul album, **Dynamic Island Pro** (dengan dukungan *Background Picture-in-Picture*), serta efek opt-in **Physics Liquid Glass** (menggunakan simulasi refraksi Hukum Snell + filter SVG `feDisplacementMap` + *specular rim highlight*).
+**ZRA** adalah aplikasi web klien **YouTube Music** modern berbasis **Next.js App Router** yang menggabungkan pengalaman desain **Material 3 Expressive** & **Pure Black AMOLED**, **Dynamic Color** adaptif dari sampul album, **Dynamic Island Pro** (dengan dukungan *Background Picture-in-Picture*), serta efek opt-in **Physics Liquid Glass** (menggunakan simulasi refraksi Hukum Snell + filter SVG `feDisplacementMap` + *specular rim highlight*).
 
-Secara fungsional, Sonara memadukan mesin rekomendasi, antrean, dan animasi lirik per-kata bergaya **Metrolist** dengan fitur analitik, audio tools, dan antarmuka ekspresif bergaya **ArchiveTune** — termasuk **Equalizer 5-Band**, **Sleep Timer (End of Current Track)**, **Ambient Always-On Display (AOD)**, **Shareable Lyrics Card Studio**, **Listening Stats & Year-in-Music Recap**, **Auto Top Mixes**, **Custom Playlist Tags**, serta **Dual-Scope Search (Online + My Library)**.
+Secara fungsional, ZRA memadukan mesin rekomendasi, antrean, dan animasi lirik per-kata bergaya **Metrolist** dengan fitur analitik, audio tools, dan antarmuka ekspresif bergaya **ArchiveTune** — termasuk **Equalizer 5-Band**, **Sleep Timer (End of Current Track)**, **Ambient Always-On Display (AOD)**, **Shareable Lyrics Card Studio**, **Listening Stats & Year-in-Music Recap**, **Auto Top Mixes**, **Custom Playlist Tags**, serta **Dual-Scope Search (Online + My Library)**.
 
 > **Performa Awal Ringan:** Saat web pertama kali dibuka, Sonara menggunakan gaya dock ringan (`dockStyle: 'default'`) agar rendering cepat dan hemat sumber daya. Mode **Liquid Glass** berbasis SVG refraksi dapat diaktifkan kapan saja melalui menu **Settings → Appearance**.
 
